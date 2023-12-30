@@ -44,6 +44,7 @@ public class Order {
 
     private LocalDate deliveryDate;
 
+    @Column(name="order_status")
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status = DeliveryStatus.PLACED;
 

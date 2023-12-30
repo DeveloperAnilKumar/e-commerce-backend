@@ -7,6 +7,7 @@ import Online.Repo.OrderItemsRepository;
 import Online.ServiceImpl.OrderItemsService;
 import Online.Utlity.ExcelView;
 import Online.Utlity.PdfView;
+import Online.enums.DeliveryStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.awt.print.Pageable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @CrossOrigin
 @RestController
@@ -164,7 +162,7 @@ public class OrderItemsController {
                                                      @RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "10") int size)
     {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.ASC,"orderDate");
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.DESC,"orderDate");
         Page<Order> orders = orderItemsService.getOrders(userId,  pageRequest);
         if (orders.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -172,6 +170,24 @@ public class OrderItemsController {
 
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+
+
+    @PutMapping("/{orderId}/status/{status}")
+    public ResponseEntity<String> updateDeliveryStatus(
+            @PathVariable UUID orderId,
+            @PathVariable DeliveryStatus status
+    ) {
+        try {
+            orderItemsService.updateStatus(orderId, status);
+            return ResponseEntity.ok("Delivery status updated successfully for order ID: " + orderId);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update delivery status");
+        }
+    }
+
+
 
 
 

@@ -48,7 +48,10 @@ public class ProductServiceImpl implements IProductService {
     public String fileUpload(MultipartFile file) {
         if (file != null) {
             try {
-                String UPLOAD_DIR = new ClassPathResource("static/images").getFile().getAbsolutePath();
+                //String UPLOAD_DIR =  "D:\\SpringBoot&MSProjects\\Online\\src\\main\\resources\\static\\images";
+
+
+               String UPLOAD_DIR = new ClassPathResource("static/images").getFile().getAbsolutePath();
                 Files.copy(file.getInputStream(), Paths.get(UPLOAD_DIR + File.separator + file.getOriginalFilename()),
                         StandardCopyOption.REPLACE_EXISTING);
                 System.out.println(UPLOAD_DIR);

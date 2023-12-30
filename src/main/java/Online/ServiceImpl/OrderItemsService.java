@@ -8,6 +8,7 @@ import Online.Repo.OrderItemsRepository;
 import Online.Repo.OrderRepository;
 import Online.Repo.ProductRepository;
 import Online.Repo.ShippingAddressRepository;
+import Online.enums.DeliveryStatus;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
@@ -220,4 +221,26 @@ public class OrderItemsService implements IOrderItemsService {
             return "Error creating order";
         }
     }
+
+
+    public void updateStatus(UUID orderId, DeliveryStatus status) {
+
+        Optional<Order>  order = orderRepository.findById(orderId);
+
+        if (order.isPresent()){
+            Order order1 = order.get();
+
+            order1.setId(orderId);
+            order1.setStatus(status);
+            order1.setOrderDate(LocalDate.now());
+
+            orderRepository.save(order1);
+        }
+
+    }
+
+
 }
+
+
+
